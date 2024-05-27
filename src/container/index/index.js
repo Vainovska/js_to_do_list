@@ -1,6 +1,6 @@
 export class Todo {
   static #NAME = 'todo'
-  static #saveData = () =>{
+  static #saveData = () => {
     localStorage.setItem(
       this.#NAME,
       JSON.stringify({
@@ -11,8 +11,8 @@ export class Todo {
   }
   static #loadData = () => {
     const data = localStorage.getItem(this.#NAME)
-    if(data){
-      const {list, count} = JSON.parse(data)
+    if (data) {
+      const { list, count } = JSON.parse(data)
       this.#list = list
       this.#count = count
     }
@@ -47,8 +47,9 @@ export class Todo {
     if (value.length > 1) {
       this.#createTaskData(value)
       this.#input.value = ''
-      this.#saveData()
+
       this.#render()
+      this.#saveData()
     }
   }
   static #render = () => {
@@ -67,38 +68,39 @@ export class Todo {
     const [id, text, btnDo, btnCancel] = el.children
     id.innerText = `${data.id}.`
     text.innerText = data.text
-    btnCancel.onclick = this.#handlCancel(data)
     btnDo.onclick = this.#handleDo(data, btnDo, el)
-    if(data.done){
+    btnCancel.onclick = this.#handlCancel(data)
+
+    if (data.done) {
       el.classList.add('task--done')
       btnDo.classList.remove('task__button--do')
       btnDo.classList.add('task__button--done')
     }
     return el
   }
-  static #handleDo = (data, btn, el) =() => {
+  static #handleDo = (data, btn, el) => () => {
     const result = this.#toggleDone(data.id)
-    if(result === true || result === false){
+    if (result === true || result === false) {
       el.classList.toggle('task--done')
       btn.classList.toggle('task__button--do')
       btn.classList.toggle('task__button--done')
       this.#saveData()
-
     }
   }
-  static #toggleDone= (id) =>{
+  static #toggleDone = (id) => {
     const task = this.#list.find((item) => item.id === id)
-    if(task){
+    if (task) {
       task.done = !task.done
       return task.done
-    } else{
+    } else {
       return null
     }
   }
-  static #handlCancel = (data) = () => {
+  static #handlCancel = (data) => () => {
     if (confirm('Видалити задачу?')) {
       const result = this.#deleteById(data.id)
-      if (result) {this.#render()
+      if (result) {
+        this.#render()
         this.#saveData()
       }
     }
